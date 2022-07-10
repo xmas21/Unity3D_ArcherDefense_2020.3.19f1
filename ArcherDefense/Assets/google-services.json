@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "825162863144",
+    "project_id": "archerdefense-382fd",
+    "storage_bucket": "archerdefense-382fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825162863144:android:1ee013a8d2dc245eeb5b1d",
+        "android_client_info": {
+          "package_name": "com.Lerbo.ArcherDefense"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825162863144-mk2qagrcfr857k6merqr48tno8ka2c4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1mBj2aCUKtm5A9UbgJ9wTVIIQUkBq-pI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825162863144-mk2qagrcfr857k6merqr48tno8ka2c4v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
