@@ -1,53 +1,64 @@
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using Proyecto26;       // RestClient
 using System.Collections;
 
 public class Register : MonoBehaviour
 {
-    [Header("帳號輸入欄")] public InputField account_Inputfield;
-    [Header("密碼輸入欄")] public InputField password_Inputfield;
-    [Header("信箱輸入欄")] public InputField email_Inputfield;
+    [SerializeField] [Header("帳號輸入欄")] InputField account_Inputfield;
+    [SerializeField] [Header("密碼輸入欄")] InputField password_Inputfield;
+    [SerializeField] [Header("信箱輸入欄")] InputField email_Inputfield;
 
-    [Header("錯誤訊息")] public Text hintMessage;
+    [SerializeField] [Header("錯誤訊息")] Text hintMessage;
 
-    User downloadUser = new User();
-
-    void Start()
-    {
-        InitializeValue();
-    }
+    string downloadUserData;        // 下載的玩家資訊
 
     /// <summary>
     /// 註冊帳號
     /// </summary>
+    [System.Obsolete]
     public void RegisterAccount()
     {
         hintMessage.text = "";
 
-        // 確認帳號是否已經註冊過
-        // 1. 先抓取帳號資訊
-        RestClient.Get<User>("https://archerdefense-382fd-default-rtdb.firebaseio.com/" + account_Inputfield.text + ".json").Then(
-            response =>
-            {
-                downloadUser = response;
-            }
-            );
-
-        // 2. 資訊比對
-        StartCoroutine(AccountCheck(1f));
+        // 資訊比對
+        StartCoroutine(AccountCheck("https://archerdefense-382fd-default-rtdb.firebaseio.com/" + account_Inputfield.text + ".json"));
     }
 
     /// <summary>
-    /// 資訊確認
+    /// 顯示密碼
     /// </summary>
-    /// <param name="_time">等待時間</param>
-    /// <returns></returns>
-    IEnumerator AccountCheck(float _time)
+    public void ShowPassword()
     {
-        yield return new WaitForSeconds(_time);
+        if (password_Inputfield.contentType == InputField.ContentType.Standard) password_Inputfield.contentType = InputField.ContentType.Password;
 
-        if (downloadUser.userAccount == account_Inputfield.text)
+        else password_Inputfield.contentType = InputField.ContentType.Standard;
+
+        // 讓文字做更新
+        password_Inputfield.ForceLabelUpdate();
+    }
+
+    /// <summary>
+    /// 帳號確認
+    /// </summary>
+    /// <param name="_URL">玩家帳號資訊</param>
+    /// <returns></returns>
+    [System.Obsolete]
+    IEnumerator AccountCheck(string _URL)
+    {
+        // UnityWebRequest 可使用 HTTP協定與伺服器連結，上傳或下載文字圖片
+        using (UnityWebRequest request = UnityWebRequest.Get(_URL))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.isNetworkError) Debug.Log(request.error);
+
+            // 回傳帳號資料
+            else downloadUserData = request.downloadHandler.text;
+        }
+
+        if (downloadUserData != "null")
         {
             hintMessage.text = "此帳號已經註冊，請重新註冊";
         }
@@ -57,6 +68,7 @@ public class Register : MonoBehaviour
             StaticVar.userAccount = account_Inputfield.text;
             StaticVar.userPassword = password_Inputfield.text;
             StaticVar.userEmail = email_Inputfield.text;
+
             // 上傳資料
             PostToFirebase();
 
@@ -71,12 +83,5 @@ public class Register : MonoBehaviour
     {
         User UploadUser = new User();
         RestClient.Put("https://archerdefense-382fd-default-rtdb.firebaseio.com/" + account_Inputfield.text + ".json", UploadUser);
-    }
-
-    /// <summary>
-    /// 初始化值
-    /// </summary>
-    void InitializeValue()
-    {
     }
 }
