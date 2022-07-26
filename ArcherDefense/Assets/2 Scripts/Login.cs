@@ -50,9 +50,6 @@ public class Login : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// ¶}±Òºô­¶
-    /// </summary>
     public void OpenPrivacyWeb()
     {
 #if UNITY_STANDALONE_WIN
